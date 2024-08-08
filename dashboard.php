@@ -188,7 +188,7 @@
                 <div class="card text-center">
                     <div class="card-body pb-0 mt-2 ">
                         <h4 class="mb-0">
-                            <span class="count">10468</span>
+                            <span class="count">959</span>
                         </h4>
                         <p class="text-center">Jumlah Mahasiswa</p>
 
