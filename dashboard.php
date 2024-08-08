@@ -1,4 +1,3 @@
-
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
@@ -179,25 +178,21 @@
 
         <div class="content mt-3">
 
-            <div class="col-sm-12">
-                <div class="alert  alert-success alert-dismissible fade show" role="alert">
+            <div class="col-12">
+                <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
                     <span class="badge badge-pill badge-success">Login Sukses!</span> Selamat datang <strong>Eka Nissa</strong>.
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-            </div>
-
-
-            <div class="col-12">
                 <div class="card text-center">
-                    <div class="card-body pb-0">
+                    <div class="card-body pb-0 mt-2 ">
                         <h4 class="mb-0">
                             <span class="count">10468</span>
                         </h4>
                         <p class="text-center">Jumlah Mahasiswa</p>
 
-                        <div class="chart-wrapper px-0" style="height:270px;" height="70">
+                        <div class="chart-wrapper px-0" style="height:265px;" height="70">
                             <canvas id="widgetChart1"></canvas>
                         </div>
 
@@ -225,7 +220,15 @@
     <script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
     <script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
     <script>
-        
+        setTimeout(function() {
+            var alert = document.getElementById('success-alert');
+            if (alert) {
+                alert.classList.remove('show');
+                alert.addEventListener('transitionend', function() {
+                    alert.remove(); // Remove the element from the DOM after transition ends
+                });
+            }
+        }, 5000);
     </script>
 
 </body>
