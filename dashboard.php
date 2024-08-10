@@ -1,3 +1,19 @@
+<?php
+include 'dbKoneksi.php';
+
+// Ambil jumlah mahasiswa
+$sql = "SELECT SUM(jumlah) AS jumlah_mahasiswa FROM mahasiswa";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $jumlahMahasiswa = $row['jumlah_mahasiswa'];
+} else {
+    $jumlahMahasiswa = 0;
+}
+
+$conn->close();
+?>
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
@@ -86,7 +102,7 @@
                     </div>
                     <div class="card-body pb-0">
                         <h4 class="mb-0">
-                            <span class="count">959</span>
+                            <span class="count"><?php echo $jumlahMahasiswa; ?></span>
                         </h4>
                         <p class="text-center">Jumlah Mahasiswa</p>
 

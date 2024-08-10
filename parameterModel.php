@@ -49,9 +49,6 @@ $conn->close();
     <link rel="stylesheet" href="vendors/themify-icons/css/themify-icons.css">
     <link rel="stylesheet" href="vendors/flag-icon-css/css/flag-icon.min.css">
     <link rel="stylesheet" href="vendors/selectFX/css/cs-skin-elastic.css">
-    <link rel="stylesheet" href="vendors/jqvmap/dist/jqvmap.min.css">
-    <link rel="stylesheet" href="vendors/chosen/chosen.min.css">
-
 
     <link rel="stylesheet" href="assets/css/style.css">
 
@@ -180,16 +177,9 @@ $conn->close();
     <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
     <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="assets/js/main.js"></script>
-
-    <script src="vendors/chosen/chosen.jquery.min.js"></script>
-    <script src="vendors/chart.js/dist/Chart.bundle.min.js"></script>
-    <script src="assets/js/dashboard.js"></script>
-    <script src="vendors/jqvmap/dist/jquery.vmap.min.js"></script>
-    <script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
-    <script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
     <script>
         setTimeout(function() {
-            var alert = document.getElementById('success-alert');
+            var alert = document.getElementById('alert');
             if (alert) {
                 alert.classList.remove('show');
                 alert.addEventListener('transitionend', function() {
@@ -197,14 +187,6 @@ $conn->close();
                 });
             }
         }, 5000);
-
-        jQuery(document).ready(function() {
-            jQuery(".standardSelect").chosen({
-                disable_search_threshold: 10,
-                no_results_text: "Oops, nothing found!",
-                width: "100%"
-            });
-        });
     </script>
 
 </body>
