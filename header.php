@@ -1,3 +1,22 @@
+<style>
+    /* Efek hover untuk gambar profil */
+    .user-area .dropdown-toggle {
+        position: relative;
+        display: inline-block;
+    }
+
+    .user-area .dropdown-toggle .user-avatar {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .user-area .dropdown-toggle:hover .user-avatar {
+        transform: scale(1.2);
+        /* Memperbesar gambar */
+        box-shadow: 0 0 0 8px rgba(0, 123, 255, 0.5);
+        /* Efek lingkaran berwarna biru */
+    }
+</style>
+
 <header id="header" class="header">
 
     <div class="header-menu">

@@ -14,6 +14,7 @@ $historicalData = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         include 'dbKoneksi.php';
+        date_default_timezone_set('Asia/Jakarta');
 
         // Ambil parameter dari tabel parameter_model
         $sql = "SELECT inputSize, hiddenLayerSize, outputSize, learningRate, epochs, iterasiError FROM parameter_model ORDER BY id DESC LIMIT 1";
@@ -200,6 +201,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($epoch % $iterasiError === 0) {
                 $errorMessages[] = "Epoch $epoch, Loss: " . round($loss / $numYears, 4);
             }
+
+            // Update error loss epoch terakhir
+            $errorLossEpochTerakhir = $loss / $numYears;
         }
 
         // Prediksi jumlah mahasiswa di tahun berikutnya
@@ -250,6 +254,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Exception $e) {
         $errorMessages[] = "Error: " . $e->getMessage();
     }
+
+    // Fungsi untuk menyimpan laporan ke dalam database
+    function simpanLaporan($conn, $year, $actualValue, $dataHistoris, $predicted, $errorLossEpochTerakhir, $absoluteError, $squaredError, $meanAbsoluteError, $meanSquaredError, $rootMeanSquaredError, $meanAbsolutePercentageError, $accuracy)
+    {
+        // Pastikan semua nilai yang dilewatkan ke bind_param adalah variabel
+        $dataHistorisJson = json_encode($dataHistoris);
+        $roundedPredicted = round($predicted, 4);
+        $roundedErrorLossEpochTerakhir = round($errorLossEpochTerakhir, 4);
+        $roundedAbsoluteError = round($absoluteError, 4);
+        $roundedSquaredError = round($squaredError, 4);
+        $roundedMeanAbsoluteError = round($meanAbsoluteError, 4);
+        $roundedMeanSquaredError = round($meanSquaredError, 4);
+        $roundedRootMeanSquaredError = round($rootMeanSquaredError, 4);
+        // MAPE dan accuracy dalam persentase
+        $roundedMeanAbsolutePercentageError = round($meanAbsolutePercentageError * 100, 2);
+        $roundedAccuracy = round($accuracy, 2);
+
+        // Menggunakan ROUND untuk memastikan format angka dengan 4 desimal
+        $stmt = $conn->prepare("INSERT INTO prediksi_laporan (tahun, actual_value, data_historis, prediksi, error_loss_epoch_terakhir, error_absolut, error_kuadrat, mae, mse, rmse, mape, accuracy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+        $stmt->bind_param(
+            "iissdddddddd",
+            $year,
+            $actualValue,
+            $dataHistorisJson,
+            $roundedPredicted,
+            $roundedErrorLossEpochTerakhir,
+            $roundedAbsoluteError,
+            $roundedSquaredError,
+            $roundedMeanAbsoluteError,
+            $roundedMeanSquaredError,
+            $roundedRootMeanSquaredError,
+            $roundedMeanAbsolutePercentageError,
+            $roundedAccuracy
+        );
+
+        // Eksekusi statement
+        $stmt->execute();
+
+        // Tutup statement
+        $stmt->close();
+    }
+
+    $dataHistoris = $data;
+    simpanLaporan(
+        $conn,
+        $year,
+        (int)$actualValue, // Convert to integer
+        $dataHistoris,
+        $predicted,
+        $errorLossEpochTerakhir,
+        $absoluteError,
+        $squaredError,
+        $meanAbsoluteError,
+        $meanSquaredError,
+        $rootMeanSquaredError,
+        $meanAbsolutePercentageError,
+        $accuracy
+    );
 }
 ?>
 <!doctype html>
@@ -302,7 +365,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-top: 20px;
         }
 
-        .custom-font{
+        .custom-font {
             font-size: 18px;
         }
     </style>
@@ -395,15 +458,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th>Tahun</th>
-                                                    <th>Jumlah Mahasiswa</th>
+                                                    <th class="text-center">Tahun</th>
+                                                    <th class="text-center">Jumlah Mahasiswa</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?php foreach ($historicalData as $index => $jumlah): ?>
                                                     <tr>
-                                                        <td><?php echo htmlspecialchars($index + 1); ?></td>
-                                                        <td><?php echo htmlspecialchars($jumlah); ?></td>
+                                                        <td class="text-center"><?php echo htmlspecialchars($index + 1); ?></td>
+                                                        <td class="text-center"><?php echo htmlspecialchars($jumlah); ?></td>
                                                     </tr>
                                                 <?php endforeach; ?>
                                             </tbody>

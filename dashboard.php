@@ -156,7 +156,7 @@ $conn->close();
                     alert.remove(); // Remove the element from the DOM after transition ends
                 });
             }
-        }, 5000);
+        }, 7000);
 
         jQuery(document).ready(function() {
             jQuery(".standardSelect").chosen({
