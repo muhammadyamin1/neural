@@ -9,7 +9,7 @@ $hiddenLayerSize = $_POST['hiddenLayerSize'];
 $outputSize = $_POST['outputSize'];
 $learningRate = $_POST['learningRate'];
 $epochs = $_POST['epochs'];
-
+$iterasiError = $_POST['iterasiError'];
 
 // Cek apakah data sudah ada di database
 $sql = "SELECT * FROM parameter_model WHERE id = 1"; // Ganti dengan ID yang sesuai jika ada lebih dari satu set data
@@ -22,13 +22,14 @@ if ($result->num_rows > 0) {
             hiddenLayerSize = '$hiddenLayerSize', 
             outputSize = '$outputSize', 
             learningRate = '$learningRate', 
-            epochs = '$epochs', 
+            epochs = '$epochs',
+            iterasiError = '$iterasiError',
             modified_at = NOW() 
             WHERE id = 1"; // Ganti dengan ID yang sesuai jika ada lebih dari satu set data
 } else {
     // Jika data belum ada, simpan data baru
-    $sql = "INSERT INTO parameter_model (id, inputSize, hiddenLayerSize, outputSize, learningRate, epochs) 
-            VALUES (1, '$inputSize', '$hiddenLayerSize', '$outputSize', '$learningRate', '$epochs')"; // Ganti ID jika perlu
+    $sql = "INSERT INTO parameter_model (id, inputSize, hiddenLayerSize, outputSize, learningRate, epochs, iterasiError) 
+            VALUES (1, '$inputSize', '$hiddenLayerSize', '$outputSize', '$learningRate', '$epochs', '$iterasiError')"; // Ganti ID jika perlu
 }
 
 if ($conn->query($sql) === TRUE) {

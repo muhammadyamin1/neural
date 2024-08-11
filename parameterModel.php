@@ -14,6 +14,7 @@ if ($result->num_rows > 0) {
     $outputSize = $row['outputSize'];
     $learningRate = $row['learningRate'];
     $epochs = $row['epochs'];
+    $iterasiError = $row['iterasiError'];
     $modified = $row['modified_at'];
 } else {
     // Default values if no data found
@@ -22,6 +23,7 @@ if ($result->num_rows > 0) {
     $outputSize = '';
     $learningRate = '';
     $epochs = '';
+    $iterasiError = '';
 }
 
 $conn->close();
@@ -65,6 +67,16 @@ $conn->close();
         .form-group {
             margin-bottom: 0;
             /* Menghilangkan margin bawah default untuk menjaga jarak antar elemen form */
+        }
+
+        .form-display-error {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-display-error .form-control.custom-width {
+            width: 100px;
+            margin-right: 10px;
         }
 
         .form-footer {
@@ -136,6 +148,16 @@ $conn->close();
                 <?php endif; ?>
             </div>
             <div class="col-lg-8">
+                <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show" role="alert" style="text-align: justify;">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    Perhatian!<br>Penggunaan 'Epochs' yang terlalu banyak dapat mengonsumsi sumber daya CPU secara berlebihan. Harap pertimbangkan untuk mengelola beban komputasi.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+
+            </div>
+            <div class="col-lg-8">
                 <div class="card">
                     <div class="card-body card-block">
                         <form action="simpanParameterModel.php" method="post" class="form-container">
@@ -158,6 +180,13 @@ $conn->close();
                             <div class="form-group">
                                 <label for="epochs">Epochs</label>
                                 <input type="number" class="form-control" id="epochs" name="epochs" value="<?php echo isset($epochs) ? $epochs : ''; ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="iterasiError">Tampilkan Error Setiap</label>
+                                <div class="form-display-error">
+                                    <input type="number" class="form-control custom-width" id="iterasiError" name="iterasiError" value="<?php echo isset($iterasiError) ? $iterasiError : ''; ?>" required>
+                                    <span>Epoch</span>
+                                </div>
                             </div>
                             <div class="form-footer">
                                 <span>Terakhir diubah: <?php echo isset($modified) ? $modified : '-'; ?></span>
