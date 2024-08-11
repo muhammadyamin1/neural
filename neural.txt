@@ -1,40 +1,7 @@
 <?php
-include 'dbKoneksi.php';
 
-// Ambil parameter model terbaru
-$sql = "SELECT * FROM parameter_model ORDER BY id DESC LIMIT 1";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    $param = $result->fetch_assoc();
-    $inputSize = $param['inputSize'];
-    $hiddenLayerSize = $param['hiddenLayerSize'];
-    $outputSize = $param['outputSize'];
-    $learningRate = $param['learningRate'];
-    $epochs = $param['epochs'];
-} else {
-    die("Tidak ada parameter model ditemukan.");
-}
-
-$result->close();
-
-// Ambil data dari formulir
-$year = $_POST['year'];
-$actualValue = $_POST['actual_value'];
-
-// Ambil data historis dari tabel mahasiswa
-$sql = "SELECT jumlah FROM mahasiswa WHERE tahun < ? ORDER BY tahun ASC";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $year);
-$stmt->execute();
-$result = $stmt->get_result();
-
-$data = [];
-while ($row = $result->fetch_assoc()) {
-    $data[] = $row['jumlah'];
-}
-$stmt->close();
-print_r($data);
+// Data jumlah mahasiswa selama 4 tahun
+$data = [270, 185, 152, 189];
 $numYears = count($data);
 
 // Menyiapkan data input dan target
@@ -49,6 +16,13 @@ $YMax = max($Y);
 
 $XNorm = array_map(fn($x) => ($x - $XMin) / ($XMax - $XMin), $X);
 $YNorm = array_map(fn($y) => ($y - $YMin) / ($YMax - $YMin), $Y);
+
+// Parameter jaringan
+$inputSize = 1;        // Jumlah neuron di input layer
+$hiddenLayerSize = 2;  // Jumlah neuron di hidden layer
+$outputSize = 1;       // Jumlah neuron di output layer
+$learningRate = 0.1;   // Learning rate
+$epochs = 1000;        // Jumlah epoch
 
 // Inisialisasi bobot dan bias
 $W1 = array_fill(0, $hiddenLayerSize, array_fill(0, $inputSize, rand() / getrandmax() * 0.1));
@@ -204,6 +178,9 @@ $predictedNorm = sigmoid(array_sum($z2Next));
 // Denormalisasi hasil prediksi
 $predicted = $predictedNorm * ($YMax - $YMin) + $YMin;
 
+// Jumlah mahasiswa yang sebenarnya (misalkan diketahui)
+$actualValue = 163; // Contoh nilai sebenarnya
+
 // Menghitung error
 $absoluteError = abs($predicted - $actualValue);
 $squaredError = pow($predicted - $actualValue, 2);
@@ -216,7 +193,7 @@ $meanAbsolutePercentageError = array_sum(array_map(fn($y) => abs(($y - $predicte
 $accuracy = 100 - $meanAbsolutePercentageError;
 
 // Menampilkan hasil
-echo "Prediksi jumlah mahasiswa untuk tahun ".$year." adalah " . round($predicted, 2) . "\n";
+echo "Prediksi jumlah mahasiswa untuk tahun ke-$nextYear adalah " . round($predicted, 2) . "\n";
 echo "Jumlah mahasiswa yang sebenarnya adalah $actualValue\n";
 echo "Absolute Error: " . round($absoluteError, 2) . "\n";
 echo "Squared Error: " . round($squaredError, 2) . "\n";
@@ -224,8 +201,5 @@ echo "Mean Absolute Error (MAE): " . round($meanAbsoluteError, 2) . "\n";
 echo "Mean Squared Error (MSE): " . round($meanSquaredError, 2) . "\n";
 echo "Root Mean Squared Error (RMSE): " . round($rootMeanSquaredError, 2) . "\n";
 echo "Mean Absolute Percentage Error (MAPE): " . round($meanAbsolutePercentageError, 2) . "%\n";
-echo "Akurasi: " . round($accuracy, 2) . "%\n";
-
-$conn->close();
-
+echo "Akurasi Prediksi: " . round($accuracy, 2) . "%\n";
 ?>
