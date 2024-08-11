@@ -10,6 +10,8 @@ $rootMeanSquaredError = null;
 $meanAbsolutePercentageError = null;
 $accuracy = null;
 $historicalData = [];
+$errorLossEpochTerakhir = null;
+$validate = true;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
@@ -64,10 +66,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($XMax === $XMin) {
             throw new Exception('Rentang nilai X adalah nol, normalisasi tidak mungkin.');
+            $validate = false;
         }
 
         if ($YMax === $YMin) {
             throw new Exception('Rentang nilai Y adalah nol, normalisasi tidak mungkin.');
+            $validate = false;
         }
 
         $XNorm = array_map(fn($x) => ($x - $XMin) / ($XMax - $XMin), $X);
@@ -212,6 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($XMax === $XMin) {
             throw new Exception('Rentang nilai X adalah nol, normalisasi tidak mungkin.');
+            $validate = false;
         }
 
         $z1Next = array_map(
@@ -251,8 +256,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $accuracy = 100 - ($meanAbsolutePercentageError * 100);
     } catch (DivisionByZeroError $e) {
         $errorMessages[] = "Error: Terjadi kesalahan pembagian dengan nol - " . $e->getMessage();
+        $validate = false;
     } catch (Exception $e) {
         $errorMessages[] = "Error: " . $e->getMessage();
+        $validate = false;
     }
 
     // Fungsi untuk menyimpan laporan ke dalam database
@@ -298,21 +305,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $dataHistoris = $data;
-    simpanLaporan(
-        $conn,
-        $year,
-        (int)$actualValue, // Convert to integer
-        $dataHistoris,
-        $predicted,
-        $errorLossEpochTerakhir,
-        $absoluteError,
-        $squaredError,
-        $meanAbsoluteError,
-        $meanSquaredError,
-        $rootMeanSquaredError,
-        $meanAbsolutePercentageError,
-        $accuracy
-    );
+
+    if ($validate) {
+        simpanLaporan(
+            $conn,
+            $year,
+            (int)$actualValue, // Convert to integer
+            $dataHistoris,
+            $predicted,
+            $errorLossEpochTerakhir,
+            $absoluteError,
+            $squaredError,
+            $meanAbsoluteError,
+            $meanSquaredError,
+            $rootMeanSquaredError,
+            $meanAbsolutePercentageError,
+            $accuracy
+        );
+    }
 }
 ?>
 <!doctype html>

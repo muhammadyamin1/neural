@@ -261,7 +261,9 @@ session_start(); // Mulai sesi
                             },
                             {
                                 text: 'Data Historis',
-                                style: 'subheader'
+                                style: 'subheader',
+                                alignment: 'center',
+                                margin: [0, 20, 0, 0]
                             },
                             {
                                 table: {
@@ -270,13 +272,21 @@ session_start(); // Mulai sesi
                                     body: [
                                         [{
                                             text: 'Tahun',
-                                            style: 'tableHeader'
+                                            style: 'tableHeader',
+                                            alignment: 'center'
                                         }, {
                                             text: 'Nilai',
-                                            style: 'tableHeader'
+                                            style: 'tableHeader',
+                                            alignment: 'center'
                                         }]
                                     ].concat(
-                                        tahunHistoris.map((tahun, index) => [tahun, dataHistoris[index]])
+                                        tahunHistoris.map((tahun, index) => [{
+                                            text: tahun,
+                                            alignment: 'center' // Meratakan teks di tengah untuk sel data
+                                        }, {
+                                            text: dataHistoris[index],
+                                            alignment: 'center' // Meratakan teks di tengah untuk sel data
+                                        }])
                                     )
                                 }
                             },
@@ -292,7 +302,7 @@ session_start(); // Mulai sesi
                                 style: 'subheader'
                             },
                             {
-                                text: 'Jaringan Syaraf Tiruan (JST) yang menggunakan metodologi backpropagation terbukti efektif untuk memprediksi jumlah mahasiswa berdasarkan data historis dengan secara otomatis menyesuaikan bobot neuron untuk meminimalkan kesalahan prediksi melalui proses iteratif yang melibatkan perhitungan gradien dan pembaruan bobot. Proses ini membuat model mampu untuk mempelajari pola non-linear dari data historis dan menghasilkan prediksi yang lebih akurat.'
+                                text: 'Jaringan Syaraf Tiruan (JST) yang menggunakan metodologi backpropagation terbukti efektif untuk memprediksi jumlah mahasiswa berdasarkan data historis dengan secara otomatis menyesuaikan bobot neuron untuk meminimalkan kesalahan prediksi melalui proses iteratif yang melibatkan perhitungan gradien dan pembaruan bobot.'
                             }
                         ],
                         styles: {
