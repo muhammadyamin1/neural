@@ -108,6 +108,9 @@
                                 </thead>
                                 <tbody id="dataMahasiswa">
                                     <!-- Data akan dimuat secara dinamis -->
+                                    <tr id="loadingRow" style="display: none;">
+                                        <td colspan="4" class="text-center">Loading...</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -221,7 +224,16 @@
         });
 
         function loadMahasiswa() {
+            // Menampilkan teks loading
+            jQuery('#loadingRow').show();
+
+            // Menyembunyikan data yang lama (jika ada)
+            jQuery('#dataMahasiswa').children().not('#loadingRow').hide();
+
+            // Melakukan panggilan AJAX
             jQuery.get('getMahasiswa.php', function(data) {
+                // Sembunyikan teks loading dan tampilkan data dalam tabel
+                jQuery('#loadingRow').hide();
                 jQuery('#dataMahasiswa').html(data);
             });
         }

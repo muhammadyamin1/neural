@@ -175,7 +175,7 @@ $conn->close();
                             </div>
                             <div class="form-group">
                                 <label for="learningRate">Learning Rate</label>
-                                <input type="number" step="0.01" class="form-control" id="learningRate" name="learningRate" value="<?php echo isset($learningRate) ? $learningRate : ''; ?>" required>
+                                <input type="number" step="0.001" class="form-control" id="learningRate" name="learningRate" value="<?php echo isset($learningRate) ? $learningRate : ''; ?>" required>
                             </div>
                             <div class="form-group">
                                 <label for="epochs">Epochs</label>

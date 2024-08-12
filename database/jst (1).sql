@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 11 Agu 2024 pada 20.44
+-- Waktu pembuatan: 12 Agu 2024 pada 19.35
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -67,7 +67,7 @@ CREATE TABLE `parameter_model` (
 --
 
 INSERT INTO `parameter_model` (`id`, `inputSize`, `hiddenLayerSize`, `outputSize`, `learningRate`, `epochs`, `iterasiError`, `modified_at`) VALUES
-(1, 2, 2, 1, 0.1, 1000, 100, '2024-08-11 07:46:10');
+(1, 2, 2, 1, 0.1, 1000, 100, '2024-08-12 17:33:10');
 
 -- --------------------------------------------------------
 
@@ -88,15 +88,12 @@ CREATE TABLE `prediksi_laporan` (
   `mse` decimal(10,4) NOT NULL,
   `rmse` decimal(10,4) NOT NULL,
   `mape` decimal(10,2) NOT NULL,
-  `accuracy` decimal(10,2) NOT NULL
+  `accuracy` decimal(10,2) NOT NULL,
+  `W1` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`W1`)),
+  `b1` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`b1`)),
+  `W2` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`W2`)),
+  `b2` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`b2`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data untuk tabel `prediksi_laporan`
---
-
-INSERT INTO `prediksi_laporan` (`id`, `tahun`, `actual_value`, `data_historis`, `prediksi`, `error_loss_epoch_terakhir`, `error_absolut`, `error_kuadrat`, `mae`, `mse`, `rmse`, `mape`, `accuracy`) VALUES
-(24, 2023, 189, '[270,185,152,189]', 189.9150, 0.1156, 0.9150, 0.8371, 30.9575, 1969.0380, 44.3738, 14.44, 85.56);
 
 --
 -- Indexes for dumped tables
@@ -128,13 +125,13 @@ ALTER TABLE `prediksi_laporan`
 -- AUTO_INCREMENT untuk tabel `mahasiswa`
 --
 ALTER TABLE `mahasiswa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT untuk tabel `prediksi_laporan`
 --
 ALTER TABLE `prediksi_laporan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

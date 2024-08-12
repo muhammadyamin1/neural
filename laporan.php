@@ -218,6 +218,23 @@ session_start(); // Mulai sesi
                     // Membuat data tahun berdasarkan jumlah nilai dalam data_historis
                     const tahunHistoris = dataHistoris.map((_, index) => index + 1);
 
+                    // Parsing data bobot dan bias dari format longtext JSON
+                    const W1 = data.W1 ? JSON.parse(data.W1) : [];
+                    const b1 = data.b1 ? JSON.parse(data.b1) : [];
+                    const W2 = data.W2 ? JSON.parse(data.W2) : [];
+                    const b2 = data.b2 ? JSON.parse(data.b2) : [];
+
+                    // Konversi data ke tipe number jika perlu
+                    const predicted = parseFloat(data.prediksi);
+                    const errorLossEpochTerakhir = parseFloat(data.error_loss_epoch_terakhir);
+                    const absoluteError = parseFloat(data.error_absolut);
+                    const squaredError = parseFloat(data.error_kuadrat);
+                    const meanAbsoluteError = parseFloat(data.mae);
+                    const meanSquaredError = parseFloat(data.mse);
+                    const rootMeanSquaredError = parseFloat(data.rmse);
+                    const meanAbsolutePercentageError = parseFloat(data.mape) * 100;
+                    const accuracy = parseFloat(data.accuracy);
+
                     // Definisi dokumen PDF
                     var docDefinition = {
                         content: [{
@@ -229,7 +246,7 @@ session_start(); // Mulai sesi
                                 style: 'subheader'
                             },
                             {
-                                text: 'Jaringan Syaraf Tiruan (JST) ini digunakan untuk memprediksi jumlah mahasiswa di masa depan berdasarkan data jumlah mahasiswa dari tahun-tahun sebelumnya. JST merupakan model pembelajaran mesin yang terinspirasi oleh cara kerja otak manusia.'
+                                text: 'Jaringan Syaraf Tiruan (JST) ini digunakan untuk memprediksi jumlah mahasiswa di masa depan berdasarkan data jumlah mahasiswa dari tahun-tahun sebelumnya. JST merupakan model pembelajaran mesin yang terinspirasi oleh cara kerja otak manusia, dengan kemampuan untuk mempelajari pola dari data historis dan melakukan generalisasi untuk membuat prediksi.'
                             },
                             {
                                 text: 'Metodologi',
@@ -247,15 +264,15 @@ session_start(); // Mulai sesi
                                     body: [
                                         ['Tahun', data.tahun],
                                         ['Jumlah Mahasiswa Sebenarnya', data.actual_value],
-                                        ['Prediksi', data.prediksi],
-                                        ['Loss Pada Epoch Terakhir', data.error_loss_epoch_terakhir],
-                                        ['Absolute Error', data.error_absolut],
-                                        ['Squared Error', data.error_kuadrat],
-                                        ['MAE', data.mae],
-                                        ['MSE', data.mse],
-                                        ['RMSE', data.rmse],
-                                        ['MAPE (%)', data.mape],
-                                        ['Accuracy (%)', data.accuracy]
+                                        ['Prediksi', predicted.toFixed(4)],
+                                        ['Loss Pada Epoch Terakhir', errorLossEpochTerakhir.toFixed(4)],
+                                        ['Absolute Error', absoluteError.toFixed(4)],
+                                        ['Squared Error', squaredError.toFixed(4)],
+                                        ['MAE', meanAbsoluteError.toFixed(4)],
+                                        ['MSE', meanSquaredError.toFixed(4)],
+                                        ['RMSE', rootMeanSquaredError.toFixed(4)],
+                                        ['MAPE (%)', meanAbsolutePercentageError.toFixed(2)],
+                                        ['Accuracy (%)', accuracy.toFixed(2)]
                                     ]
                                 }
                             },
@@ -271,38 +288,129 @@ session_start(); // Mulai sesi
                                     widths: ['*', '*'],
                                     body: [
                                         [{
-                                            text: 'Tahun',
+                                                text: 'Tahun',
+                                                style: 'tableHeader',
+                                                alignment: 'center'
+                                            },
+                                            {
+                                                text: 'Nilai',
+                                                style: 'tableHeader',
+                                                alignment: 'center'
+                                            }
+                                        ],
+                                        ...tahunHistoris.map((tahun, index) => [{
+                                                text: tahun.toString(),
+                                                alignment: 'center'
+                                            },
+                                            {
+                                                text: dataHistoris[index].toString(),
+                                                alignment: 'center'
+                                            }
+                                        ])
+                                    ]
+                                }
+                            },
+                            {
+                                text: 'Bobot dan Bias',
+                                style: 'subheader',
+                                pageBreak: 'before' // Tambahkan pemisahan halaman sebelum bagian ini
+                            },
+                            {
+                                text: 'Bobot pada Layer Tersembunyi (W1)',
+                                style: 'subheader'
+                            },
+                            {
+                                table: {
+                                    headerRows: 1,
+                                    widths: Array(W1[0].length).fill('*'),
+                                    body: [
+                                        [{
+                                            text: 'Bobot',
                                             style: 'tableHeader',
                                             alignment: 'center'
-                                        }, {
-                                            text: 'Nilai',
+                                        }],
+                                        ...W1.map(row => row.map(weight => ({
+                                            text: parseFloat(weight).toFixed(4).toString(),
+                                            alignment: 'center'
+                                        })))
+                                    ]
+                                }
+                            },
+                            {
+                                text: 'Bias pada Layer Tersembunyi (b1)',
+                                style: 'subheader'
+                            },
+                            {
+                                table: {
+                                    body: [
+                                        [{
+                                                text: 'Bias',
+                                                style: 'tableHeader',
+                                                alignment: 'center'
+                                            },
+                                            ...b1.map(b => ({
+                                                text: parseFloat(b).toFixed(4).toString(),
+                                                alignment: 'center'
+                                            }))
+                                        ]
+                                    ]
+                                }
+                            },
+                            {
+                                text: 'Bobot pada Layer Output (W2)',
+                                style: 'subheader'
+                            },
+                            {
+                                table: {
+                                    headerRows: 1,
+                                    widths: Array(W2[0].length).fill('*'),
+                                    body: [
+                                        [{
+                                            text: 'Bobot',
                                             style: 'tableHeader',
                                             alignment: 'center'
-                                        }]
-                                    ].concat(
-                                        tahunHistoris.map((tahun, index) => [{
-                                            text: tahun,
-                                            alignment: 'center' // Meratakan teks di tengah untuk sel data
-                                        }, {
-                                            text: dataHistoris[index],
-                                            alignment: 'center' // Meratakan teks di tengah untuk sel data
-                                        }])
-                                    )
+                                        }],
+                                        ...W2.map(row => row.map(weight => ({
+                                            text: parseFloat(weight).toFixed(4).toString(),
+                                            alignment: 'center'
+                                        })))
+                                    ]
+                                }
+                            },
+                            {
+                                text: 'Bias pada Layer Output (b2)',
+                                style: 'subheader'
+                            },
+                            {
+                                table: {
+                                    body: [
+                                        [{
+                                                text: 'Bias',
+                                                style: 'tableHeader',
+                                                alignment: 'center'
+                                            },
+                                            ...b2.map(b => ({
+                                                text: parseFloat(b).toFixed(4).toString(),
+                                                alignment: 'center'
+                                            }))
+                                        ]
+                                    ]
                                 }
                             },
                             {
                                 text: 'Diskusi',
-                                style: 'subheader'
+                                style: 'subheader',
+                                margin: [0, 20, 0, 0]
                             },
                             {
-                                text: 'Perbedaan antara prediksi dan nilai aktual dalam model prediksi dapat disebabkan oleh faktor kualitas data yang tidak lengkap atau mengandung noise sehingga mempengaruhi akurasi prediksi. Arsitektur model yang tidak optimal, seperti overfitting atau underfitting, juga dapat menyebabkan perbedaan.'
+                                text: 'Perbedaan antara prediksi dan nilai aktual dalam model prediksi, seperti Jaringan Syaraf Tiruan (JST), dapat disebabkan oleh beberapa faktor utama. Kualitas data berperan penting, di mana data yang tidak lengkap atau mengandung noise dapat mempengaruhi akurasi prediksi. Selain itu, arsitektur model yang tidak optimal, seperti overftting atau underftting, juga dapat menyebabkan perbedaan.'
                             },
                             {
                                 text: 'Kesimpulan',
                                 style: 'subheader'
                             },
                             {
-                                text: 'Jaringan Syaraf Tiruan (JST) yang menggunakan metodologi backpropagation terbukti efektif untuk memprediksi jumlah mahasiswa berdasarkan data historis yang ada. Algoritma backpropagation dapat secara otomatis menyesuaikan bobot neuron untuk meminimalkan kesalahan prediksi melalui proses iteratif yang melibatkan perhitungan dan pembaruan bobot.'
+                                text: 'Jaringan Syaraf Tiruan (JST) yang menggunakan metodologi backpropagation terbukti efektif untuk memprediksi jumlah mahasiswa berdasarkan data historis yang ada. Algoritma backpropagation dapat secara otomatis menyesuaikan bobot neuron untuk meminimalkan kesalahan prediksi melalui proses iteratif yang melibatkan perhitungan gradien dan pembaruan bobot. Proses ini memungkinkan model untuk mempelajari pola non-linear dari data historis dan menghasilkan prediksi yang lebih akurat.'
                             }
                         ],
                         styles: {

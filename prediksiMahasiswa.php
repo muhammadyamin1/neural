@@ -263,10 +263,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Fungsi untuk menyimpan laporan ke dalam database
-    function simpanLaporan($conn, $year, $actualValue, $dataHistoris, $predicted, $errorLossEpochTerakhir, $absoluteError, $squaredError, $meanAbsoluteError, $meanSquaredError, $rootMeanSquaredError, $meanAbsolutePercentageError, $accuracy)
-    {
-        // Pastikan semua nilai yang dilewatkan ke bind_param adalah variabel
+    function simpanLaporan(
+        $conn,
+        $year,
+        $actualValue,
+        $dataHistoris,
+        $predicted,
+        $errorLossEpochTerakhir,
+        $absoluteError,
+        $squaredError,
+        $meanAbsoluteError,
+        $meanSquaredError,
+        $rootMeanSquaredError,
+        $meanAbsolutePercentageError,
+        $accuracy,
+        $W1,
+        $b1,
+        $W2,
+        $b2
+    ) {
+        // Encode data menjadi JSON
         $dataHistorisJson = json_encode($dataHistoris);
+        $W1Json = json_encode($W1);
+        $b1Json = json_encode($b1);
+        $W2Json = json_encode($W2);
+        $b2Json = json_encode($b2);
+
+        // Bulatkan angka dengan 4 desimal
         $roundedPredicted = round($predicted, 4);
         $roundedErrorLossEpochTerakhir = round($errorLossEpochTerakhir, 4);
         $roundedAbsoluteError = round($absoluteError, 4);
@@ -278,11 +301,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $roundedMeanAbsolutePercentageError = round($meanAbsolutePercentageError * 100, 2);
         $roundedAccuracy = round($accuracy, 2);
 
-        // Menggunakan ROUND untuk memastikan format angka dengan 4 desimal
-        $stmt = $conn->prepare("INSERT INTO prediksi_laporan (tahun, actual_value, data_historis, prediksi, error_loss_epoch_terakhir, error_absolut, error_kuadrat, mae, mse, rmse, mape, accuracy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        // Query SQL untuk menyimpan data
+        $stmt = $conn->prepare("INSERT INTO prediksi_laporan (
+        tahun,
+        actual_value,
+        data_historis,
+        prediksi,
+        error_loss_epoch_terakhir,
+        error_absolut,
+        error_kuadrat,
+        mae,
+        mse,
+        rmse,
+        mape,
+        accuracy,
+        W1,
+        b1,
+        W2,
+        b2
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         $stmt->bind_param(
-            "iissdddddddd",
+            "iissddddddddssss",
             $year,
             $actualValue,
             $dataHistorisJson,
@@ -294,7 +334,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $roundedMeanSquaredError,
             $roundedRootMeanSquaredError,
             $roundedMeanAbsolutePercentageError,
-            $roundedAccuracy
+            $roundedAccuracy,
+            $W1Json,
+            $b1Json,
+            $W2Json,
+            $b2Json
         );
 
         // Eksekusi statement
@@ -320,7 +364,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $meanSquaredError,
             $rootMeanSquaredError,
             $meanAbsolutePercentageError,
-            $accuracy
+            $accuracy,
+            $W1,
+            $b1,
+            $W2,
+            $b2
         );
     }
 }
