@@ -16,7 +16,7 @@ if (isset($_POST['delete_ids'])) {
     header("Location: laporan.php"); // Redirect ke halaman utama setelah penghapusan
     exit();
 } else {
-    $_SESSION['message'] = "Tidak ada data yang dipilih untuk dihapus.";
+    $_SESSION['message'] = "Anda belum memilih data apapun untuk dihapus. Silakan pilih data terlebih dahulu.";
     header("Location: laporan.php");
     exit();
 }
