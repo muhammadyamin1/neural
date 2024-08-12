@@ -12,7 +12,7 @@
     .user-area .dropdown-toggle:hover .user-avatar {
         transform: scale(1.2);
         /* Memperbesar gambar */
-        box-shadow: 0 0 0 8px rgba(0, 123, 255, 0.5);
+        box-shadow: 0 0 0 5px rgba(0, 123, 255, 0.5);
         /* Efek lingkaran berwarna biru */
     }
 </style>
