@@ -1,5 +1,6 @@
 <?php
-session_start();
+include 'auth.php';
+checkRole(['admin', 'user']);
 
 $errorMessages = [];
 $predicted = null;

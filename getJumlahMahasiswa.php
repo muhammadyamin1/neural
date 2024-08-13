@@ -1,4 +1,6 @@
 <?php
+include 'auth.php';
+checkRole(['admin', 'user']);
 header('Content-Type: application/json');
 
 include 'dbKoneksi.php';

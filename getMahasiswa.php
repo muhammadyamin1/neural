@@ -1,4 +1,6 @@
 <?php
+include 'auth.php';
+checkRole(['admin']);
 include 'dbKoneksi.php';
 
 $query = "SELECT tahun, jumlah, modified_at, id FROM mahasiswa ORDER BY tahun DESC";

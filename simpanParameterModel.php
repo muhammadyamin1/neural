@@ -1,6 +1,7 @@
 <?php
+include 'auth.php';
+checkRole(['admin']);
 include 'dbKoneksi.php';
-session_start();
 date_default_timezone_set('Asia/Jakarta');
 
 // Ambil data dari form

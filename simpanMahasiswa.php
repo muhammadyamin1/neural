@@ -1,4 +1,6 @@
 <?php
+include 'auth.php';
+checkRole(['admin']);
 include 'dbKoneksi.php';
 date_default_timezone_set('Asia/Jakarta');
 

@@ -1,5 +1,6 @@
 <?php
-session_start(); // Mulai sesi
+include 'auth.php';
+checkRole(['admin']);
 require 'dbKoneksi.php';
 
 // Ambil data pengguna dari database
@@ -103,37 +104,42 @@ $result = $conn->query($sql);
                         <div class="card-body">
                             <h2 class="mb-4">Daftar Pengguna</h2>
                             <a href="tambahUser.php" class="btn btn-primary mb-3"><i class="fa fa-plus-circle"></i> Tambah Pengguna</a>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">ID</th>
-                                        <th>Username</th>
-                                        <th class="text-center">Role</th>
-                                        <th class="text-center">Tanggal Dibuat</th>
-                                        <th class="text-center">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if ($result->num_rows > 0): ?>
-                                        <?php while ($row = $result->fetch_assoc()): ?>
-                                            <tr>
-                                                <td class="text-center"><?= $row['id'] ?></td>
-                                                <td><?= $row['username'] ?></td>
-                                                <td class="text-center"><?= $row['role'] ?></td>
-                                                <td class="text-center"><?= $row['created_at'] ?></td>
-                                                <td class="text-center">
-                                                    <a href="editUser.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Edit</a>
-                                                    <a href="deleteUser.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus pengguna ini?')"><i class="fa fa-trash"></i> Hapus</a>
-                                                </td>
-                                            </tr>
-                                        <?php endwhile; ?>
-                                    <?php else: ?>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
                                         <tr>
-                                            <td colspan='4' class='text-center'>Tidak ada data</td>
+                                            <th class="text-center">No.</th>
+                                            <th>Nama</th>
+                                            <th>Username</th>
+                                            <th class="text-center">Role</th>
+                                            <th class="text-center">Tanggal Dibuat</th>
+                                            <th class="text-center">Aksi</th>
                                         </tr>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <?php if ($result->num_rows > 0): ?>
+                                            <?php $no = 1; ?>
+                                            <?php while ($row = $result->fetch_assoc()): ?>
+                                                <tr>
+                                                    <td class="text-center"><?= $no++ ?></td>
+                                                    <td><?= $row['nama'] ?></td>
+                                                    <td><?= $row['username'] ?></td>
+                                                    <td class="text-center"><?= $row['role'] ?></td>
+                                                    <td class="text-center"><?= $row['created_at'] ?></td>
+                                                    <td class="text-center">
+                                                        <a href="editUser.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Edit</a>
+                                                        <a href="deleteUser.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus pengguna ini?')"><i class="fa fa-trash"></i> Hapus</a>
+                                                    </td>
+                                                </tr>
+                                            <?php endwhile; ?>
+                                        <?php else: ?>
+                                            <tr>
+                                                <td colspan='6' class='text-center'>Tidak ada data</td>
+                                            </tr>
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

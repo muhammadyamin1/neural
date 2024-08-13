@@ -1,5 +1,6 @@
 <?php
-session_start();
+include 'auth.php';
+checkRole(['admin']);
 include 'dbKoneksi.php';
 
 if (isset($_POST['delete_ids'])) {

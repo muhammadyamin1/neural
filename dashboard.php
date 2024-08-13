@@ -1,5 +1,6 @@
 <?php
-session_start();
+include 'auth.php';
+checkRole(['admin', 'user']);
 include 'dbKoneksi.php';
 
 // Ambil jumlah mahasiswa
@@ -11,6 +12,16 @@ if ($result->num_rows > 0) {
     $jumlahMahasiswa = $row['jumlah_mahasiswa'];
 } else {
     $jumlahMahasiswa = 0;
+}
+
+// Ambil jumlah user
+$sql = "SELECT COUNT(*) as totalUser FROM users";
+$result = $conn->query($sql);
+$totalUser = 0;
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $totalUser = $row['totalUser'];
 }
 
 $conn->close();
@@ -88,12 +99,17 @@ $conn->close();
         <div class="content mt-3">
 
             <div class="col-12">
-                <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
-                    <span class="badge badge-pill badge-success">Login Sukses!</span> Selamat datang <strong>Eka Nissa</strong>.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
+                <?php
+                if (isset($_SESSION['success'])) {
+                    echo '<div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
+                    <span class="badge badge-pill badge-success">Login sukses sebagai ' . $_SESSION['role'] . '!</span> Selamat datang <strong>' . $_SESSION['nama'] . '</strong>.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>';
+                    unset($_SESSION['success']);
+                }
+                ?>
             </div>
 
             <div class="col-lg-9 col-sm-12">
@@ -124,7 +140,7 @@ $conn->close();
                             <div class="stat-icon dib"><i class="ti-user text-primary border-primary"></i></div>
                             <div class="stat-content dib">
                                 <div class="stat-text">User</div>
-                                <div class="stat-digit">3</div>
+                                <div class="stat-digit"><?php echo $totalUser; ?></div>
                             </div>
                         </div>
                     </div>
@@ -157,7 +173,7 @@ $conn->close();
                     alert.remove(); // Remove the element from the DOM after transition ends
                 });
             }
-        }, 7000);
+        }, 8000);
 
         jQuery(document).ready(function() {
             jQuery(".standardSelect").chosen({

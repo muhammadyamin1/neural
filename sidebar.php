@@ -1,6 +1,6 @@
 <?php
 $current_page = basename($_SERVER['PHP_SELF']);
-$role = isset($_SESSION['role']) ? $_SESSION['role'] : 'user'; // Mengambil role user dari sesi, defaultnya guest
+$role = isset($_SESSION['role']) ? $_SESSION['role'] : 'user'; // Mengambil role user dari sesi, defaultnya user
 ?>
 <aside id="left-panel" class="left-panel">
     <nav class="navbar navbar-expand-sm navbar-default">
@@ -36,8 +36,9 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : 'user'; // Mengambil role
                     </li>
                 <?php endif; ?>
 
-                <h3 class="menu-title">Pengaturan</h3><!-- /.menu-title -->
+                <?php if ($role == 'user') : ?><h3 class="menu-title">Tentang</h3><!-- /.menu-title --><?php endif; ?>
                 <?php if ($role == 'admin') : ?>
+                <h3 class="menu-title">Pengaturan</h3><!-- /.menu-title -->
                     <li class="<?php echo $current_page == 'parameterModel.php' ? 'active' : ''; ?>">
                         <a href="parameterModel.php"> <i class="menu-icon fa fa-bar-chart"></i>Parameter Model</a>
                     </li>

@@ -1,4 +1,6 @@
 <?php
+include 'auth.php';
+checkRole(['admin']);
 include 'dbKoneksi.php';
 
 $id = $_POST['id'];

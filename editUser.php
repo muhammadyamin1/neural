@@ -1,5 +1,6 @@
 <?php
-session_start(); // Mulai sesi
+include 'auth.php';
+checkRole(['admin']);
 require 'dbKoneksi.php';
 
 $id = $_GET['id'];
@@ -12,15 +13,16 @@ $stmt->close();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
+    $nama = $_POST['nama'];
     $role = $_POST['role'];
 
     if (!empty($_POST['password'])) {
         $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-        $stmt = $conn->prepare("UPDATE users SET username = ?, password = ?, role = ? WHERE id = ?");
-        $stmt->bind_param("sssi", $username, $password, $role, $id);
+        $stmt = $conn->prepare("UPDATE users SET username = ?, nama = ?, password = ?, role = ? WHERE id = ?");
+        $stmt->bind_param("ssssi", $username, $nama, $password, $role, $id);
     } else {
-        $stmt = $conn->prepare("UPDATE users SET username = ?, role = ? WHERE id = ?");
-        $stmt->bind_param("ssi", $username, $role, $id);
+        $stmt = $conn->prepare("UPDATE users SET username = ?, nama = ?, role = ? WHERE id = ?");
+        $stmt->bind_param("sssi", $username, $nama, $role, $id);
     }
 
     if ($stmt->execute()) {
@@ -119,13 +121,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <h2 class="mb-4">Edit Pengguna</h2>
                             <form action="editUser.php?id=<?= $id ?>" method="POST">
                                 <div class="form-group">
+                                    <label for="nama">Nama</label>
+                                    <input type="text" name="nama" id="nama" class="form-control" value="<?= $user['nama'] ?>" autocomplete="off" required>
+                                </div>
+                                <div class="form-group">
                                     <label for="username">Username</label>
                                     <input type="text" name="username" id="username" class="form-control" value="<?= $user['username'] ?>" autocomplete="off" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="password">Password (kosongkan jika tidak ingin mengubah)</label>
                                     <div class="input-group">
-                                        <input type="password" id="password" name="password" placeholder="Password" class="form-control">
+                                        <input type="password" id="password" name="password" placeholder="Password" class="form-control" autocomplete="new-password">
                                         <div class="input-group-addon" onclick="togglePasswordVisibility()">
                                             <i class="fa fa-eye" id="toggleIcon"></i>
                                         </div>

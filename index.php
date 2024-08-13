@@ -32,7 +32,7 @@
             max-width: 400px;
         }
 
-        #togglePassword {
+        .form-group .pw {
             cursor: pointer;
         }
     </style>
@@ -51,12 +51,16 @@
             echo '<div class="alert alert-success mt-4 mb-3">' . $_SESSION['success'] . '</div>';
             unset($_SESSION['success']);
         }
+        $username = isset($_SESSION['input_username']) ? $_SESSION['input_username'] : '';
+        if (isset($_SESSION['input_username'])) {
+            unset($_SESSION['input_username']);
+        }
         ?>
         <form action="prosesLogin.php" method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
                 <div class="input-group">
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Masukkan Username" required>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Masukkan Username" value="<?php echo htmlspecialchars($username); ?>" required>
                     <div class="input-group-addon">
                         <i class="fa fa-user"></i>
                     </div>
@@ -66,8 +70,8 @@
                 <label for="password">Password</label>
                 <div class="input-group">
                     <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan Password" required>
-                    <div class="input-group-addon">
-                        <i class="fa fa-eye" id="togglePassword"></i>
+                    <div class="input-group-addon pw" onclick="togglePasswordVisibility()">
+                        <i class="fa fa-eye" id="toggleIcon"></i>
                     </div>
                 </div>
             </div>
@@ -79,20 +83,21 @@
     <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="assets/js/main.js"></script>
     <script>
-        jQuery(document).ready(function($) {
-            $('#togglePassword').click(function() {
-                var passwordField = $('#password');
-                var passwordFieldType = passwordField.attr('type');
-                if (passwordFieldType == 'password') {
-                    passwordField.attr('type', 'text');
-                    $(this).removeClass('fa fa-eye').addClass('fa fa-eye-slash');
-                } else {
-                    passwordField.attr('type', 'password');
-                    $(this).removeClass('fa fa-eye-slash').addClass('fa fa-eye');
-                }
-            });
-        });
+        function togglePasswordVisibility() {
+            const passwordField = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
     </script>
+
 </body>
 
 </html>

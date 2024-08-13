@@ -1,5 +1,6 @@
 <?php
-session_start();
+include 'auth.php';
+checkRole(['admin']);
 ?>
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
@@ -100,22 +101,24 @@ session_start();
                         <div class="card-body">
                             <h2>Input Data Mahasiswa</h2>
                             <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalMahasiswa" onclick="resetModal()">Tambah Mahasiswa</button>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">Tahun</th>
-                                        <th class="text-center">Jumlah Mahasiswa</th>
-                                        <th class="text-center">Terakhir Diubah</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dataMahasiswa">
-                                    <!-- Data akan dimuat secara dinamis -->
-                                    <tr id="loadingRow" style="display: none;">
-                                        <td colspan="4" class="text-center">Loading...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Tahun</th>
+                                            <th class="text-center">Jumlah Mahasiswa</th>
+                                            <th class="text-center">Terakhir Diubah</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dataMahasiswa">
+                                        <!-- Data akan dimuat secara dinamis -->
+                                        <tr id="loadingRow" style="display: none;">
+                                            <td colspan="4" class="text-center">Loading...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
