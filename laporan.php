@@ -400,7 +400,7 @@ session_start(); // Mulai sesi
                             {
                                 text: 'Diskusi',
                                 style: 'subheader',
-                                margin: [0, 20, 0, 0]
+                                margin: [0, 20.5, 0, 5]
                             },
                             {
                                 text: 'Perbedaan antara prediksi dan nilai aktual dalam model prediksi, seperti Jaringan Syaraf Tiruan (JST), dapat disebabkan oleh beberapa faktor utama. Kualitas data berperan penting, di mana data yang tidak lengkap atau mengandung noise dapat mempengaruhi akurasi prediksi. Selain itu, arsitektur model yang tidak optimal, seperti overftting atau underftting, juga dapat menyebabkan perbedaan.'
