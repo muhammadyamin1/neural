@@ -1,4 +1,5 @@
 <?php
+session_start();
 include 'dbKoneksi.php';
 
 // Ambil jumlah mahasiswa

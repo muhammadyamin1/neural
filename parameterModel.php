@@ -1,6 +1,6 @@
 <?php
-include 'dbKoneksi.php';
 session_start();
+include 'dbKoneksi.php';
 
 // Query untuk mengambil data
 $sql = "SELECT * FROM parameter_model WHERE id = 1"; // Ganti dengan ID yang sesuai jika ada lebih dari satu set data

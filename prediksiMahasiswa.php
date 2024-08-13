@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 $errorMessages = [];
 $predicted = null;
 $nextYear = null;
