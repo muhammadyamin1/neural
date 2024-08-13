@@ -407,7 +407,8 @@ session_start(); // Mulai sesi
                             },
                             {
                                 text: 'Kesimpulan',
-                                style: 'subheader'
+                                style: 'subheader',
+                                margin: [0, 20, 0, 5]
                             },
                             {
                                 text: 'Jaringan Syaraf Tiruan (JST) yang menggunakan metodologi backpropagation terbukti efektif untuk memprediksi jumlah mahasiswa berdasarkan data historis yang ada. Algoritma backpropagation dapat secara otomatis menyesuaikan bobot neuron untuk meminimalkan kesalahan prediksi melalui proses iteratif yang melibatkan perhitungan gradien dan pembaruan bobot. Proses ini memungkinkan model untuk mempelajari pola non-linear dari data historis dan menghasilkan prediksi yang lebih akurat.'
