@@ -257,9 +257,25 @@ checkRole(['admin', 'user']);
                     const meanAbsolutePercentageError = parseFloat(data.mape) * 100;
                     const accuracy = parseFloat(data.accuracy);
 
+                    // Mendapatkan tanggal dan waktu saat ini
+                    const today = new Date();
+                    const options = {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    };
+                    const tanggalDanWaktuCetak = today.toLocaleDateString('id-ID', options);
+
                     // Definisi dokumen PDF
                     var docDefinition = {
                         content: [{
+                                text: `Tanggal Cetak: ${tanggalDanWaktuCetak}`,
+                                style: 'date'
+                            },
+                            {
                                 text: 'Laporan Prediksi JST',
                                 style: 'header'
                             },
@@ -451,9 +467,15 @@ checkRole(['admin', 'user']);
                                 bold: true,
                                 fontSize: 13,
                                 color: 'black'
+                            },
+                            date: {
+                                fontSize: 12,
+                                alignment: 'right',
+                                margin: [0, 0, 0, 10]
                             }
                         }
                     };
+
                     pdfMake.createPdf(docDefinition).open();
                 });
         }

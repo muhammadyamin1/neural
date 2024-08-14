@@ -14,6 +14,13 @@ if (isset($_GET['id'])) {
         exit();
     }
 
+    // Cek apakah mencoba menghapus Super Admin dengan id 1
+    if ($id == 1) {
+        $_SESSION['error'] = "Anda tidak dapat menghapus Super Admin.";
+        header("Location: user.php");
+        exit();
+    }
+
     // Lanjutkan proses penghapusan
     $sql = "DELETE FROM users WHERE id = ?";
     $stmt = $conn->prepare($sql);
