@@ -1,6 +1,6 @@
 <?php
 include 'auth.php';
-checkRole(['admin']);
+checkRole(['admin', 'user']);
 ?>
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
@@ -113,7 +113,7 @@ checkRole(['admin']);
                             ?>
                             <div class="table-responsive">
                                 <form action="hapusLaporan.php" method="post">
-                                    <table class="table table-bordered">
+                                    <table id="bootstrap-data-table-export" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
                                                 <th class="text-center align-middle">
@@ -131,42 +131,63 @@ checkRole(['admin']);
                                                 <th class='align-middle'>RMSE</th>
                                                 <th class='text-center align-middle'>MAPE (%)</th>
                                                 <th class='text-center align-middle'>Accuracy (%)</th>
+                                                <?php if ($role != 'user'): ?>
+                                                    <th class='text-center align-middle'>ID User</th>
+                                                <?php endif; ?>
                                                 <th class='text-center align-middle'>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
                                             include 'dbKoneksi.php';
+                                            $user_id = $_SESSION['user_id'];
+                                            $role = $_SESSION['role'];
 
-                                            // Ambil data laporan dari database
-                                            $sql = "SELECT * FROM `prediksi_laporan` ORDER BY `prediksi_laporan`.`tahun` DESC";
-                                            $result = $conn->query($sql);
+                                            // Tentukan query berdasarkan peran pengguna
+                                            if ($role == 'admin') {
+                                                $sql = "SELECT * FROM `prediksi_laporan` ORDER BY `tahun` DESC";
+                                            } else {
+                                                $sql = "SELECT * FROM `prediksi_laporan` WHERE `user_id` = ? ORDER BY `tahun` DESC";
+                                            }
+
+                                            $stmt = $conn->prepare($sql);
+
+                                            if ($role != 'admin') {
+                                                $stmt->bind_param("i", $user_id);
+                                            }
+
+                                            $stmt->execute();
+                                            $result = $stmt->get_result();
 
                                             $no = 1; // Inisialisasi nomor urut
 
                                             if ($result->num_rows > 0) {
                                                 while ($row = $result->fetch_assoc()) {
                                                     echo "<tr>";
-                                                    echo "<td class='text-center'><input type='checkbox' name='delete_ids[]' value='" . $row['id'] . "'></td>"; // Checkbox untuk menghapus
+                                                    echo "<td class='text-center'><input type='checkbox' name='delete_ids[]' value='" . htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8') . "'></td>"; // Checkbox untuk menghapus
                                                     echo "<td class='text-center'>" . $no++ . "</td>"; // Menampilkan nomor urut
-                                                    echo "<td class='text-center'>" . $row['tahun'] . "</td>";
-                                                    echo "<td class='text-center'>" . $row['actual_value'] . "</td>";
-                                                    echo "<td>" . $row['prediksi'] . "</td>";
-                                                    echo "<td>" . $row['error_loss_epoch_terakhir'] . "</td>";
-                                                    echo "<td>" . $row['error_absolut'] . "</td>";
-                                                    echo "<td>" . $row['error_kuadrat'] . "</td>";
-                                                    echo "<td>" . $row['mae'] . "</td>";
-                                                    echo "<td>" . $row['mse'] . "</td>";
-                                                    echo "<td>" . $row['rmse'] . "</td>";
-                                                    echo "<td class='text-center'>" . $row['mape'] . "%</td>";
-                                                    echo "<td class='text-center'>" . $row['accuracy'] . "%</td>";
-                                                    echo '<td class="text-center"><button type="button" class="btn btn-primary btn-sm" onclick="makePDF(' . $row['id'] . ')"><i class="fa fa-book"></i> Cetak PDF</button></td>';
+                                                    echo "<td class='text-center'>" . htmlspecialchars($row['tahun'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                                    echo "<td class='text-center'>" . htmlspecialchars($row['actual_value'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row['prediksi'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row['error_loss_epoch_terakhir'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row['error_absolut'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row['error_kuadrat'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row['mae'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row['mse'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row['rmse'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                                    echo "<td class='text-center'>" . htmlspecialchars($row['mape'], ENT_QUOTES, 'UTF-8') . "%</td>";
+                                                    echo "<td class='text-center'>" . htmlspecialchars($row['accuracy'], ENT_QUOTES, 'UTF-8') . "%</td>";
+                                                    if ($role != 'user') {
+                                                        echo "<td class='text-center'>" . htmlspecialchars($row['user_id'], ENT_QUOTES, 'UTF-8') . "</td>";
+                                                    }
+                                                    echo '<td class="text-center"><button type="button" class="btn btn-primary btn-sm" onclick="makePDF(' . htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8') . ')"><i class="fa fa-book"></i> Cetak PDF</button></td>';
                                                     echo "</tr>";
                                                 }
                                             } else {
                                                 echo "<tr><td colspan='14' class='text-center'>Tidak ada data</td></tr>";
                                             }
 
+                                            $stmt->close();
                                             $conn->close();
                                             ?>
                                         </tbody>

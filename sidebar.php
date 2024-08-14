@@ -30,15 +30,13 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : 'user'; // Mengambil role
                     <a href="prediksiMahasiswa.php"> <i class="menu-icon fa fa-users"></i>Jumlah Mahasiswa</a>
                 </li>
 
-                <?php if ($role == 'admin') : ?>
-                    <li class="<?php echo $current_page == 'laporan.php' ? 'active' : ''; ?>">
-                        <a href="laporan.php"> <i class="menu-icon fa fa-book"></i>Hasil</a>
-                    </li>
-                <?php endif; ?>
+                <li class="<?php echo $current_page == 'laporan.php' ? 'active' : ''; ?>">
+                    <a href="laporan.php"> <i class="menu-icon fa fa-book"></i>Hasil</a>
+                </li>
 
                 <?php if ($role == 'user') : ?><h3 class="menu-title">Tentang</h3><!-- /.menu-title --><?php endif; ?>
                 <?php if ($role == 'admin') : ?>
-                <h3 class="menu-title">Pengaturan</h3><!-- /.menu-title -->
+                    <h3 class="menu-title">Pengaturan</h3><!-- /.menu-title -->
                     <li class="<?php echo $current_page == 'parameterModel.php' ? 'active' : ''; ?>">
                         <a href="parameterModel.php"> <i class="menu-icon fa fa-bar-chart"></i>Parameter Model</a>
                     </li>

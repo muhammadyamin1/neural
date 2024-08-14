@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 13 Agu 2024 pada 12.50
+-- Waktu pembuatan: 14 Agu 2024 pada 06.48
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -62,13 +62,6 @@ CREATE TABLE `parameter_model` (
   `modified_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data untuk tabel `parameter_model`
---
-
-INSERT INTO `parameter_model` (`id`, `inputSize`, `hiddenLayerSize`, `outputSize`, `learningRate`, `epochs`, `iterasiError`, `modified_at`) VALUES
-(1, 2, 2, 1, 0.1, 1000, 100, '2024-08-13 10:32:50');
-
 -- --------------------------------------------------------
 
 --
@@ -92,7 +85,8 @@ CREATE TABLE `prediksi_laporan` (
   `W1` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`W1`)),
   `b1` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`b1`)),
   `W2` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`W2`)),
-  `b2` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`b2`))
+  `b2` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`b2`)),
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -115,10 +109,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `nama`, `username`, `password`, `role`, `created_at`) VALUES
-(1, 'Admin', 'admin', '$2y$10$0/JZR7cI8tr.y62HtgYmA.GjqKPuOEpO4f0UetPXoWf4PBeOHMZwC', 'admin', '2024-08-13 10:17:58'),
-(2, 'User', 'user', '$2y$10$YF48hhvC.28zvlsSGBHrQeQYj8zYVWLU4IJwKJn4oPTPdwsR21eHC', 'user', '2024-08-13 10:34:47'),
+(1, 'Eka Nissa', 'admin', '$2y$10$PmqAvZpahxXvdmxkj6mTw.6rC2acIG8PrG5E1JBQWWtqchH8jWpN.', 'admin', '2024-08-13 10:17:58'),
+(2, 'User', 'user', '$2y$10$VYT5G0QovrPR8as.t.p4veP8i0MmZFBPd5OsDvpp9TQc0vuYgrjHy', 'user', '2024-08-13 10:34:47'),
 (3, 'Afni', 'afni', '$2y$10$SPTAhXxqSETEQNIEKnQTTuuWNk1Bo6ui22De8LzOAxq5MCFD6v1ZS', 'admin', '2024-08-13 10:36:43'),
-(4, 'Angga', 'angga', '$2y$10$nWVLxir77bCIF99TWmajIOSxfDab.NQT57u8zYosZqAXZ7PRkWPQa', 'user', '2024-08-13 10:37:01');
+(4, 'Angga', 'angga', '$2y$10$452MbDBRu4TYDRyv9vkpJOX.F81knbmoWbGs19NjiUQO97oFur6.2', 'user', '2024-08-13 10:37:01');
 
 --
 -- Indexes for dumped tables
@@ -168,7 +162,7 @@ ALTER TABLE `prediksi_laporan`
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -1,3 +1,8 @@
+<?php
+if (isset($_SESSION['user_id'])) {
+    $userId = $_SESSION['user_id'];
+}
+?>
 <style>
     /* Efek hover untuk gambar profil */
     .user-area .dropdown-toggle {
@@ -32,7 +37,7 @@
                 </a>
 
                 <div class="user-menu dropdown-menu">
-                    <a class="nav-link" href="#"><i class="fa fa-user"></i> Kelola Profil</a>
+                    <a class="nav-link" href="editUser.php?id=<?php echo $userId ?>"><i class="fa fa-user"></i> Kelola Profil</a>
                     <a class="nav-link" href="logout.php"><i class="fa fa-power-off"></i> Logout</a>
                 </div>
             </div>

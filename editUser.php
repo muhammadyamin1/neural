@@ -1,9 +1,21 @@
 <?php
 include 'auth.php';
-checkRole(['admin']);
+checkRole(['admin', 'user']);
 require 'dbKoneksi.php';
 
-$id = $_GET['id'];
+$id = intval($_GET['id']); // Sanitasi input
+$currentUser = $_SESSION['user_id'];
+$currentUserRole = $_SESSION['role'];
+$isSelf = ($currentUser == $id); // Cek apakah yang mengakses adalah diri sendiri
+$isSuperAdmin = ($currentUser == 1); // Cek apakah yang mengakses adalah admin utama
+
+// Jika admin utama (id 1) sedang diedit oleh orang lain, blok aksesnya
+if ($id == 1 && !$isSelf && !$isSuperAdmin) {
+    $_SESSION['error'] = "Anda tidak diizinkan mengubah data admin utama.";
+    header('Location: user.php');
+    exit();
+}
+
 $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
@@ -12,10 +24,39 @@ $user = $result->fetch_assoc();
 $stmt->close();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $nama = $_POST['nama'];
-    $role = $_POST['role'];
+    $nama = htmlspecialchars($_POST['nama']); // Sanitasi input
 
+    // Jika yang mengakses adalah diri sendiri atau super admin, ambil username dari input form
+    if ($isSelf || $isSuperAdmin) {
+        $username = htmlspecialchars($_POST['username']); // Sanitasi input
+    } else {
+        $username = $user['username']; // Gunakan username yang lama
+    }
+
+    // Cek apakah username baru sudah ada di database (selain user yang sedang diedit)
+    if ($username !== $user['username']) {
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE username = ? AND id != ?");
+        $stmt->bind_param("si", $username, $id);
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($count > 0) {
+            $_SESSION['error'] = "Username sudah digunakan oleh pengguna lain.";
+            header('Location: editUser.php?id=' . $id);
+            exit();
+        }
+    }
+
+    // Jika role diubah oleh admin atau super admin, ambil dari input form
+    if ($currentUserRole === 'admin' || $isSuperAdmin) {
+        $role = htmlspecialchars($_POST['role']); // Sanitasi input
+    } else {
+        $role = $user['role']; // Gunakan role yang lama
+    }
+
+    // Persiapkan pernyataan SQL berdasarkan apakah password diubah atau tidak
     if (!empty($_POST['password'])) {
         $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
         $stmt = $conn->prepare("UPDATE users SET username = ?, nama = ?, password = ?, role = ? WHERE id = ?");
@@ -33,7 +74,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt->close();
 
-    header('Location: user.php');
+    // Redirect berdasarkan siapa yang mengakses
+    if ($isSelf) {
+        header('Location: editUser.php?id=' . $id);
+    } else {
+        header('Location: user.php');
+    }
     exit();
 }
 ?>
@@ -116,18 +162,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="row">
 
                 <div class="col-lg-12">
+                    <?php if (isset($_SESSION['error'])) : ?>
+                        <div class="alert alert-danger" role="alert">
+                            <?php
+                            echo $_SESSION['error'];
+                            unset($_SESSION['error']);
+                            ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (isset($_SESSION['success'])) : ?>
+                        <div class="alert alert-success" role="alert">
+                            <?php
+                            echo $_SESSION['success'];
+                            unset($_SESSION['success']);
+                            ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
                             <h2 class="mb-4">Edit Pengguna</h2>
                             <form action="editUser.php?id=<?= $id ?>" method="POST">
                                 <div class="form-group">
                                     <label for="nama">Nama</label>
-                                    <input type="text" name="nama" id="nama" class="form-control" value="<?= $user['nama'] ?>" autocomplete="off" required>
+                                    <input type="text" name="nama" id="nama" class="form-control" value="<?= htmlspecialchars($user['nama']) ?>" autocomplete="off" required>
                                 </div>
-                                <div class="form-group">
-                                    <label for="username">Username</label>
-                                    <input type="text" name="username" id="username" class="form-control" value="<?= $user['username'] ?>" autocomplete="off" required>
-                                </div>
+                                <?php if ($isSelf || $isSuperAdmin): ?>
+                                    <div class="form-group">
+                                        <label for="username">Username</label>
+                                        <input type="text" name="username" id="username" class="form-control" value="<?= htmlspecialchars($user['username']) ?>" autocomplete="off" required>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="form-group">
                                     <label for="password">Password (kosongkan jika tidak ingin mengubah)</label>
                                     <div class="input-group">
@@ -137,15 +204,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="role">Role</label>
-                                    <select name="role" id="role" class="form-control">
-                                        <option value="user" <?= $user['role'] === 'user' ? 'selected' : '' ?>>User</option>
-                                        <option value="admin" <?= $user['role'] === 'admin' ? 'selected' : '' ?>>Admin</option>
-                                    </select>
-                                </div>
+                                <?php if ($currentUserRole === 'admin' || $isSuperAdmin): ?>
+                                    <div class="form-group">
+                                        <label for="role">Role</label>
+                                        <select name="role" id="role" class="form-control">
+                                            <option value="user" <?= $user['role'] === 'user' ? 'selected' : '' ?>>User</option>
+                                            <option value="admin" <?= $user['role'] === 'admin' ? 'selected' : '' ?>>Admin</option>
+                                        </select>
+                                    </div>
+                                <?php endif; ?>
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button>
-                                <a href="user.php" class="btn btn-secondary"><i class="fa fa-arrow-circle-o-left"></i> Kembali</a>
+                                <?php if ($currentUserRole !== 'user'): ?>
+                                    <a href="user.php" class="btn btn-secondary"><i class="fa fa-arrow-circle-o-left"></i> Kembali</a>
+                                <?php endif; ?>
                             </form>
                         </div>
                     </div>

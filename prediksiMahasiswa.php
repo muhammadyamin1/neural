@@ -15,11 +15,24 @@ $accuracy = null;
 $historicalData = [];
 $errorLossEpochTerakhir = null;
 $validate = true;
+$data = [];
+$year = null;
+$actualValue = null;
+$user_id = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         include 'dbKoneksi.php';
         date_default_timezone_set('Asia/Jakarta');
+
+        // Periksa apakah tabel parameter_model memiliki data
+        $sql = "SELECT COUNT(*) as count FROM parameter_model";
+        $result = $conn->query($sql);
+        $count = $result->fetch_assoc()['count'];
+
+        if ($count == 0) {
+            throw new Exception('Tabel parameter_model masih kosong. Harap isi tabel tersebut terlebih dahulu pada menu Parameter Model.');
+        }
 
         // Ambil parameter dari tabel parameter_model
         $sql = "SELECT inputSize, hiddenLayerSize, outputSize, learningRate, epochs, iterasiError FROM parameter_model ORDER BY id DESC LIMIT 1";
@@ -283,7 +296,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $W1,
         $b1,
         $W2,
-        $b2
+        $b2,
+        $user_id
     ) {
         // Encode data menjadi JSON
         $dataHistorisJson = json_encode($dataHistoris);
@@ -303,6 +317,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // MAPE dan accuracy dalam persentase
         $roundedMeanAbsolutePercentageError = round($meanAbsolutePercentageError * 100, 2);
         $roundedAccuracy = round($accuracy, 2);
+        $user_id = $_SESSION['user_id'];
 
         // Query SQL untuk menyimpan data
         $stmt = $conn->prepare("INSERT INTO prediksi_laporan (
@@ -321,11 +336,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         W1,
         b1,
         W2,
-        b2
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        b2,
+        user_id
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         $stmt->bind_param(
-            "iissddddddddssss",
+            "iissddddddddssssi",
             $year,
             $actualValue,
             $dataHistorisJson,
@@ -341,7 +357,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $W1Json,
             $b1Json,
             $W2Json,
-            $b2Json
+            $b2Json,
+            $user_id
         );
 
         // Eksekusi statement
@@ -371,7 +388,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $W1,
             $b1,
             $W2,
-            $b2
+            $b2,
+            $user_id
         );
     }
 }
