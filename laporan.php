@@ -276,22 +276,30 @@ checkRole(['admin', 'user']);
                                 style: 'date'
                             },
                             {
-                                text: 'Laporan Prediksi JST',
-                                style: 'header'
+                                text: 'LAPORAN PREDIKSI JST JUMLAH MAHASISWA BARU DI STMIK PELITA NUSANTARA',
+                                style: 'header',
+                                alignment: 'center'
                             },
                             {
-                                text: 'Pendahuluan',
-                                style: 'subheader'
-                            },
-                            {
-                                text: 'Jaringan Syaraf Tiruan (JST) ini digunakan untuk memprediksi jumlah mahasiswa di masa depan berdasarkan data jumlah mahasiswa dari tahun-tahun sebelumnya. JST merupakan model pembelajaran mesin yang terinspirasi oleh cara kerja otak manusia, dengan kemampuan untuk mempelajari pola dari data historis dan melakukan generalisasi untuk membuat prediksi.'
-                            },
-                            {
-                                text: 'Metodologi',
-                                style: 'subheader'
-                            },
-                            {
-                                text: 'Metodologi Backpropagation digunakan untuk memprediksi jumlah mahasiswa berdasarkan data historis. Backpropagation adalah algoritma pembelajaran yang membantu JST dalam mengoptimalkan bobot neuron untuk menghasilkan prediksi yang lebih akurat.'
+                                canvas: [{
+                                        type: 'line',
+                                        x1: 0,
+                                        y1: 5,
+                                        x2: 515,
+                                        y2: 5,
+                                        lineWidth: 2,
+                                        lineColor: '#007bff'
+                                    },
+                                    {
+                                        type: 'line',
+                                        x1: 0,
+                                        y1: 7,
+                                        x2: 515,
+                                        y2: 7,
+                                        lineWidth: 2,
+                                        lineColor: '#cccccc'
+                                    }
+                                ]
                             },
                             {
                                 text: 'Hasil Prediksi',
@@ -318,7 +326,7 @@ checkRole(['admin', 'user']);
                                 text: 'Data Historis',
                                 style: 'subheader',
                                 alignment: 'center',
-                                margin: [0, 20, 0, 0]
+                                margin: [0, 13, 0, 0]
                             },
                             {
                                 table: {
@@ -349,13 +357,9 @@ checkRole(['admin', 'user']);
                                 }
                             },
                             {
-                                text: 'Bobot dan Bias',
-                                style: 'subheader',
-                                pageBreak: 'before' // Tambahkan pemisahan halaman sebelum bagian ini
-                            },
-                            {
                                 text: 'Bobot pada Layer Tersembunyi (W1)',
-                                style: 'subheader'
+                                style: 'subheader',
+                                margin: [0, 24, 0, 0]
                             },
                             {
                                 table: {
@@ -434,29 +438,13 @@ checkRole(['admin', 'user']);
                                         ]
                                     ]
                                 }
-                            },
-                            {
-                                text: 'Diskusi',
-                                style: 'subheader',
-                                margin: [0, 20.5, 0, 5]
-                            },
-                            {
-                                text: 'Perbedaan antara prediksi dan nilai aktual dalam model prediksi, seperti Jaringan Syaraf Tiruan (JST), dapat disebabkan oleh beberapa faktor utama. Kualitas data berperan penting, di mana data yang tidak lengkap atau mengandung noise dapat mempengaruhi akurasi prediksi. Selain itu, arsitektur model yang tidak optimal, seperti overftting atau underftting, juga dapat menyebabkan perbedaan.'
-                            },
-                            {
-                                text: 'Kesimpulan',
-                                style: 'subheader',
-                                margin: [0, 20, 0, 5]
-                            },
-                            {
-                                text: 'Jaringan Syaraf Tiruan (JST) yang menggunakan metodologi backpropagation terbukti efektif untuk memprediksi jumlah mahasiswa berdasarkan data historis yang ada. Algoritma backpropagation dapat secara otomatis menyesuaikan bobot neuron untuk meminimalkan kesalahan prediksi melalui proses iteratif yang melibatkan perhitungan gradien dan pembaruan bobot. Proses ini memungkinkan model untuk mempelajari pola non-linear dari data historis dan menghasilkan prediksi yang lebih akurat.'
                             }
                         ],
                         styles: {
                             header: {
                                 fontSize: 18,
                                 bold: true,
-                                margin: [0, 0, 0, 10]
+                                margin: [0, 0, 0, 5]
                             },
                             subheader: {
                                 fontSize: 15,
