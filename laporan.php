@@ -254,7 +254,7 @@ checkRole(['admin', 'user']);
                     const meanAbsoluteError = parseFloat(data.mae);
                     const meanSquaredError = parseFloat(data.mse);
                     const rootMeanSquaredError = parseFloat(data.rmse);
-                    const meanAbsolutePercentageError = parseFloat(data.mape) * 100;
+                    const meanAbsolutePercentageError = parseFloat(data.mape);
                     const accuracy = parseFloat(data.accuracy);
 
                     // Mendapatkan tanggal dan waktu saat ini
