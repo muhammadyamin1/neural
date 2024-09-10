@@ -359,7 +359,7 @@ checkRole(['admin', 'user']);
                             {
                                 text: 'Bobot pada Layer Tersembunyi (W1)',
                                 style: 'subheader',
-                                margin: [0, 24, 0, 0]
+                                margin: [0, 22.5, 0, 0]
                             },
                             {
                                 table: {
