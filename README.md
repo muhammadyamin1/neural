@@ -15,6 +15,19 @@ Dengan propagasi balik kesalahan, jaringan dapat mempelajari pola dari data dan 
 
 ---
 
+## Login Demo
+Untuk mencoba aplikasi, gunakan akun berikut:
+
+**Admin**
+- Username: `Afni`  
+- Password: `admin`  
+
+**User**
+- Username: `user`  
+- Password: `user`  
+
+---
+
 ## Spesifikasi Sistem yang Disarankan
 - Prosesor: Intel Core i5 atau setara  
 - RAM: Minimal 8 GB  
